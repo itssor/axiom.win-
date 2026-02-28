@@ -30,7 +30,7 @@ if not url then
 end
 
 ok(0.55, "fetching payload")
-local s, r = pcall(function() return loadstring(game:HttpGet(url, true))() end)
+local s, r = pcall(function() return loadstring(request({Url=url;Method="GET"}).Body)() end)
 p("")
 if s then
     p("  ✓  axiom loaded  ·  go cook")
