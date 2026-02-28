@@ -6,14 +6,14 @@ local lp = game:GetService("Players").LocalPlayer
 local id = game.PlaceId
 local function w(n) task.wait(n) end
 local function p(s) print(s) end
-local function ok(s) w(s) p("  ✓  "..s) end
+local function ok(n, s) w(n) p("  ✓  "..s) end
 
 for _,l in ipairs({"","    ░█████╗░██╗░░██╗██╗░█████╗░███╗░░░███╗","    ██╔══██╗╚██╗██╔╝██║██╔══██╗████╗░████║","    ███████║░╚███╔╝░██║██║░░██║██╔████╔██║","    ██╔══██║░██╔██╗░██║██║░░██║██║╚██╔╝██║","    ██║░░██║██╔╝╚██╗██║╚█████╔╝██║░╚═╝░██║","    ╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░╚════╝░╚═╝░░░░╚═╝","              axiom.win  ·  stay winning",""}) do p(l) w(0.04) end
 
 w(0.2) p("  booting axiom...") w(0.15)
-ok("checking environment")
-ok("resolving game context")
-ok("authenticating session")
+ok(0.6, "checking environment")
+ok(0.5, "resolving game context")
+ok(0.7, "authenticating session")
 
 local url = GAMES[id]
 if not url then
@@ -29,7 +29,7 @@ if not url then
     return
 end
 
-ok("fetching payload")
+ok(0.55, "fetching payload")
 local s, r = pcall(function() return loadstring(game:HttpGet(url, true))() end)
 p("")
 if s then
