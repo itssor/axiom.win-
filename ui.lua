@@ -7,14 +7,14 @@ local axiom = {}
 axiom.__index = axiom
 
 -- ─── Services ───────────────────────────────────────────────────
-local Players         = game:GetService("Players")
+local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
-local TweenService    = game:GetService("TweenService")
-local RunService      = game:GetService("RunService")
-local CoreGui         = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
 
 local LocalPlayer = Players.LocalPlayer
-local Mouse       = LocalPlayer:GetMouse()
+local Mouse = LocalPlayer:GetMouse and LocalPlayer:GetMouse() or nil
 
 -- ─── Theme ──────────────────────────────────────────────────────
 local Theme = {
