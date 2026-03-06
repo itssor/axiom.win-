@@ -8,8 +8,8 @@ local function w(n) task.wait(n) end
 local function p(s) print(s) end
 local function ok(n, s) w(n) p("  ✓  "..s) end
 
-local discordLink = "https://discord.gg/9VtZykNNkM"
-local discordCode = "9VtZykNNkM"
+local discordLink = "https://discord.gg/JeyA4jgnaJ"
+local discordCode = "JeyA4jgnaJ"
 
 if setclipboard then 
     setclipboard(discordLink) 
@@ -107,6 +107,6 @@ if s then
     p("  place   : "..id)
     p("  ─────────────────────────────────")
 else
-    p("  ✗  load failed — check your url or executor http perms")
+    p("  ✗  load failed — go to discord https://discord.gg/JeyA4jgnaJ")
     p("  error: "..tostring(r))
 end
