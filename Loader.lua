@@ -2,111 +2,97 @@ local GAMES = {
     [100283815455755] = "https://raw.githubusercontent.com/itssor/axiom.win-/refs/heads/main/VagrantSurvival.lua",
 }
 
-local lp = game:GetService("Players").LocalPlayer
+local BLACKLISTED_EXECUTORS = {"Xeno", "Ronix", "Solara"}
+
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local MarketplaceService = game:GetService("MarketplaceService")
+local StarterGui = game:GetService("StarterGui")
+local GuiService = game:GetService("GuiService")
+
+local lp = Players.LocalPlayer
 local id = game.PlaceId
-local function w(n) task.wait(n) end
-local function p(s) print(s) end
-local function ok(n, s) w(n) p("  ✓  "..s) end
+local request = (syn and syn.request) or (http and http.request) or http_request or request
 
-local discordLink = "https://discord.gg/JeyA4jgnaJ"
-local discordCode = "JeyA4jgnaJ"
-
-if setclipboard then 
-    setclipboard(discordLink) 
-end
-
-pcall(function()
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "axiom.win",
-        Text = "Joining Discord... (Link copied to clipboard!)",
-        Duration = 6
-    })
-end)
-
-local function openDiscord()
-    local req = request or http_request or (syn and syn.request)
+local function secureCheck()
+    local exec = (identifyexecutor and type(identifyexecutor) == "function" and identifyexecutor()) or "Unknown"
     
-    if req then
-        for i = 6463, 6472 do
-            task.spawn(function()
-                pcall(function()
-                    req({
-                        Url = "http://127.0.0.1:"..tostring(i).."/rpc?v=1",
-                        Method = "POST",
-                        Headers = {
-                            ["Content-Type"] = "application/json",
-                            ["Origin"] = "https://discord.com"
-                        },
-                        Body = game:GetService("HttpService"):JSONEncode({
-                            cmd = "INVITE_BROWSER",
-                            nonce = string.lower(game:GetService("HttpService"):GenerateGUID(false)),
-                            args = {code = discordCode}
-                        })
-                    })
-                end)
-            end)
+    for _, name in ipairs(BLACKLISTED_EXECUTORS) do
+        if exec:find(name) then
+            lp:Kick("\n\naxiom.win\n\nAccess Denied: Blacklisted Executor ("..name..")\n")
+            return false
         end
     end
-    
-    pcall(function()
-        if identifyexecutor and identifyexecutor():find("Solara") then
-             game:GetService("GuiService"):OpenBrowserWindow(discordLink)
+
+    local integrityMethods = {
+        ["hookmetamethod"] = hookmetamethod,
+        ["hookfunction"] = hookfunction,
+        ["getrawmetatable"] = getrawmetatable,
+        ["checkcaller"] = checkcaller,
+        ["setreadonly"] = setreadonly
+    }
+
+    for name, func in pairs(integrityMethods) do
+        if not func or type(func) ~= "function" then
+            lp:Kick("\n\naxiom.win\n\nIntegrity Failure: Missing/Spoofed "..name.."\n")
+            return false
         end
-    end)
+    end
+
+    return true
 end
 
-task.spawn(openDiscord)
+local function log(msg, symbol)
+    symbol = symbol or "»"
+    print(string.format("  %s  %s", symbol, msg))
+end
 
+if not secureCheck() then return end
 
-for _,l in ipairs({
-    "",
-    "    ░█████╗░██╗░░██╗██╗░█████╗░███╗░░░███╗",
-    "    ██╔══██╗╚██╗██╔╝██║██╔══██╗████╗░████║",
-    "    ███████║░╚███╔╝░██║██║░░██║██╔████╔██║",
-    "    ██╔══██║░██╔██╗░██║██║░░██║██║╚██╔╝██║",
-    "    ██║░░██║██╔╝╚██╗██║╚█████╔╝██║░╚═╝░██║",
-    "    ╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░╚════╝░╚═╝░░░░╚═╝",
+print("\n")
+local banner = {
+    "    █████╗ ██╗  ██╗██╗ ██████╗ ███╗   ███╗",
+    "   ██╔══██╗╚██╗██╔╝██║██╔═══██╗████╗ ████║",
+    "   ███████║ ╚███╔╝ ██║██║   ██║██╔████╔██║",
+    "   ██╔══██║ ██╔██╗ ██║██║   ██║██║╚██╔╝██║",
+    "   ██║  ██║██╔╝ ██╗██║╚██████╔╝██║ ╚═╝ ██║",
+    "   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝     ╚═╝",
     "            axiom.win  ·  stay winning",
     ""
-}) do p(l) w(0.04) end
+}
 
-p("\n  -------------------------------------------------------")
-p("  JOIN THE DISCORD: " .. discordLink)
-p("  -------------------------------------------------------\n")
+for _, line in ipairs(banner) do
+    print(line)
+    task.wait(0.01)
+end
 
-w(0.2) p("  booting axiom...") w(0.15)
-ok(0.6, "checking environment")
-ok(0.5, "resolving game context")
-ok(0.7, "authenticating session")
+log("Security validation passed", "🛡️")
+task.wait(0.4)
 
 local url = GAMES[id]
 if not url then
-    w(0.2)
-    p("  ╔══════════════════════════════════════╗")
-    p("  ║                                      ║")
-    p("  ║   lmao what game is this even        ║")
-    p("  ║   axiom doesn't fw this place        ║")
-    p("  ║                                      ║")
-    p("  ╚══════════════════════════════════════╝")
-    w(1.2)
-    lp:Kick("\n\n  axiom.win\n\n  unsupported game\n  placeid "..id.." is not on the list\n\n  go play a real game\n")
+    log("Axiom doesn't support PlaceID: " .. id, "✗")
+    task.wait(1)
+    lp:Kick("\n\naxiom.win\n\nUnsupported Game (ID: "..id..")\n")
     return
-end 
+end
 
-ok(0.55, "fetching payload")
-local s, r = pcall(function() 
-    return loadstring(request({Url=url;Method="GET"}).Body)() 
+log("Synchronizing with remote...", "🛰️")
+task.wait(0.4)
+
+local success, result = pcall(function()
+    local response = request({Url = url, Method = "GET"})
+    return loadstring(response.Body)()
 end)
 
-p("")
-if s then
-    p("  ✓  axiom loaded  ·  go cook")
-    p("  ─────────────────────────────────")
-    p("  game    : "..(game:GetService("MarketplaceService"):GetProductInfo(id).Name or tostring(id)))
-    p("  player  : "..lp.Name)
-    p("  place   : "..id)
-    p("  ─────────────────────────────────")
+print("\n  " .. string.rep("─", 40))
+if success then
+    local gameName = pcall(function() return MarketplaceService:GetProductInfo(id).Name end) and MarketplaceService:GetProductInfo(id).Name or "Unknown"
+    log("Axiom Loaded", "★")
+    log("Session  : " .. lp.Name, "•")
+    log("Context  : " .. gameName, "•")
 else
-    p("  ✗  load failed — go to discord https://discord.gg/JeyA4jgnaJ")
-    p("  error: "..tostring(r))
+    log("Critical Error during load", "✗")
+    log("Log: " .. tostring(result), "!")
 end
+print("  " .. string.rep("─", 40) .. "\n")
